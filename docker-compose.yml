@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dhamini-backend
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - DATABASE_URL=${DATABASE_URL}
+      - MVP_MODE=${MVP_MODE:-false}
+      - MVP_REDIS_FALLBACK=${MVP_REDIS_FALLBACK:-true}
+      - MVP_SMS_LOGGING=${MVP_SMS_LOGGING:-true}
+      - MVP_PAYMENT_MODE=${MVP_PAYMENT_MODE:-true}
+      - MVP_VERIFICATION_MODE=${MVP_VERIFICATION_MODE:-true}
+    depends_on:
+      - redis
+    networks:
+      - dhamini-network
+    restart: unless-stopped
+
+  # Redis (optional for MVP mode)
+  redis:
+    image: redis:7-alpine
+    container_name: dhamini-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - dhamini-network
+    restart: unless-stopped
+
+networks:
+  dhamini-network:
+    driver: bridge
+
+volumes:
+  redis-data:

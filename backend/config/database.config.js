@@ -3,14 +3,24 @@ const logger = require('../utils/logger.util');
 const redis = require('./redis.config');
 
 // Database configuration
+const databaseUrl = process.env.DATABASE_URL || process.env.SUPABASE_DATABASE_URL;
 const sequelize = new Sequelize(
-  process.env.DB_NAME || 'dhamini_db',
-  process.env.DB_USER || 'dhamini_user',
-  process.env.DB_PASSWORD || 'password',
-  {
+  databaseUrl || '', // Use connection string if available
+  !databaseUrl ? {
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT) || 5432,
+    database: process.env.DB_NAME || 'dhamini_db',
+    username: process.env.DB_USER || 'dhamini_user',
+    password: process.env.DB_PASSWORD || 'password'
+  } : undefined,
+  {
     dialect: 'postgres',
+    dialectOptions: {
+      ssl: process.env.NODE_ENV === 'production' || process.env.DATABASE_URL ? {
+        require: true,
+        rejectUnauthorized: false // Accept self-signed certificates from Supabase
+      } : false
+    },
     logging: process.env.NODE_ENV === 'development' ? (msg) => logger.debug(msg) : false,
     pool: {
       max: parseInt(process.env.DB_POOL_MAX) || 20,
