@@ -4,6 +4,7 @@ const { success } = require('../utils/response.util');
 const { AppError, asyncHandler } = require('../middleware/authHandler');
 const { generateOTP, sendOTP } = require('../services/otp.service');
 const { cache } = require('../config/redis.config');
+const { Op } = require('sequelize');
 
 /**
  * Register a new user
@@ -11,15 +12,15 @@ const { cache } = require('../config/redis.config');
 const register = asyncHandler(async (req, res) => {
   const { phoneNumber, email, password, role, firstName, lastName } = req.body;
 
+  // Build where clause with only defined values
+  const whereConditions = [];
+  if (phoneNumber) whereConditions.push({ phoneNumber });
+  if (email) whereConditions.push({ email });
+
   // Check if user already exists
-  const existingUser = await User.findOne({
-    where: { 
-      $or: [
-        { phoneNumber },
-        { email }
-      ]
-    }
-  });
+  const existingUser = whereConditions.length > 0 
+    ? await User.findOne({ where: { [Op.or]: whereConditions } })
+    : null;
 
   if (existingUser) {
     throw new AppError('User with this phone number or email already exists', 409);

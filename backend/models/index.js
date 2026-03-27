@@ -1,13 +1,13 @@
 const sequelize = require('../config/database.config').sequelize;
 
-const User = require('./User');
-const KYC = require('./KYC');
-const Institution = require('./Institution');
-const Loan = require('./Loan');
-const Mandate = require('./Mandate');
-const Repayment = require('./Repayment');
-const CreditScore = require('./CreditScore');
-const BlockchainRecord = require('./BlockchainRecord');
+const User = require('./User')(sequelize);
+const KYC = require('./KYC')(sequelize);
+const Institution = require('./Institution')(sequelize);
+const Loan = require('./Loan')(sequelize);
+const Mandate = require('./Mandate')(sequelize);
+const Repayment = require('./Repayment')(sequelize);
+const CreditScore = require('./CreditScore')(sequelize);
+const BlockchainRecord = require('./BlockchainRecord')(sequelize);
 
 // Define relationships
 User.hasOne(KYC, { foreignKey: 'userId', as: 'kyc' });

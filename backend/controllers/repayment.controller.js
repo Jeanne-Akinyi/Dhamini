@@ -352,7 +352,7 @@ const retryRepayment = asyncHandler(async (req, res) => {
     message: 'Repayment retry initiated',
     repayment
   });
-}
+});
 
 /**
  * Helper functions

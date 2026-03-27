@@ -90,7 +90,7 @@ const seedInstitutions = async () => {
   ];
 
   const created = await Institution.bulkCreate(institutions);
-  logger.log(`Created ${created.length} institutions`);
+  logger.info(`Created ${created.length} institutions`);
   
   return created;
 };

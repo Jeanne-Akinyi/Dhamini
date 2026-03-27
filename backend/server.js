@@ -1,5 +1,8 @@
+require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 const { notFound, errorHandler } = require("./middleware/authHandler");
 const { initializeDatabase, closeConnection } = require("./config/database.config");
 const { initializeScheduler, stopScheduler } = require("./services/scheduler.service");
@@ -8,6 +11,37 @@ const logger = require('./utils/logger.util');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Dhamini API",
+      version: "1.0.0",
+      description: "Consent-based Automated Loan Repayment & Credit Intelligence Platform"
+    },
+    servers: [
+      {
+        url: `http://localhost:${PORT}`,
+        description: "Development server"
+      }
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT"
+        }
+      }
+    },
+    security: [{ bearerAuth: [] }]
+  },
+  apis: ["./routes/*.js", "./controllers/*.js"]
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 // Middleware
 app.use(cors());
@@ -22,6 +56,12 @@ app.use((req, res, next) => {
 
 // Routes
 app.use("/api", routes);
+
+// Swagger UI
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get("/api-docs.json", (req, res) => {
+  res.json(swaggerSpec);
+});
 
 // Health check
 app.get("/health", (req, res) => {

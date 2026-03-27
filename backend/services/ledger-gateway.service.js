@@ -3,7 +3,7 @@ const FabricCAServices = require('fabric-ca-client');
 const fs = require('fs');
 const path = require('path');
 const logger = require('../utils/logger.util');
-const config = require('./fabric.config');
+const config = require('../config/fabric.config');
 
 /**
  * Hyperledger Fabric Gateway Service

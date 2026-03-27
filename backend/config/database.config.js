@@ -50,9 +50,6 @@ const initializeDatabase = async (force = false) => {
     await sequelize.sync({ force, alter: !force });
     logger.info('Database models synchronized successfully');
     
-    // Initialize Redis connection
-    await redis.connect();
-    
     return true;
   } catch (error) {
     logger.error('Failed to initialize database:', error);

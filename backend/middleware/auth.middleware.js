@@ -2,7 +2,8 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 const { AppError } = require('./authHandler');
 const logger = require('../utils/logger.util');
-const cache = require('../config/redis.config');
+const { cache } = require('../config/redis.config');
+const { verifyToken } = require('../services/jwt.service');
 
 /**
  * Authentication middleware
@@ -26,7 +27,10 @@ const authenticate = async (req, res, next) => {
     }
 
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dhamini-secret-key-2025');
+    const decoded = verifyToken(token);
+    if (!decoded) {
+      throw new AppError('Invalid token', 401);
+    }
 
     // Check if user exists
     const user = await User.findByPk(decoded.userId);
