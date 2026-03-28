@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
+import About from './pages/About';
 import BorrowerPortal from './pages/BorrowerPortal';
 import LenderPortal from './pages/LenderPortal';
 import SaccoPortal from './pages/SaccoPortal';
@@ -20,6 +21,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="about" element={<About />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="kyc" element={<KYCFlow />} />

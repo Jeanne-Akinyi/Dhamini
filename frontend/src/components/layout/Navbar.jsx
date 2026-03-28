@@ -29,6 +29,7 @@ const Navbar = () => {
 
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/" className="text-gray-700 hover:text-primary-600 transition">Home</Link>
+            <Link to="/about" className="text-gray-700 hover:text-primary-600 transition">About</Link>
             <Link to="/borrower" className="text-gray-700 hover:text-primary-600 transition">Borrowers</Link>
             <Link to="/lender" className="text-gray-700 hover:text-primary-600 transition">Lenders</Link>
             <Link to="/sacco" className="text-gray-700 hover:text-primary-600 transition">SACCOs</Link>
@@ -69,6 +70,7 @@ const Navbar = () => {
           <div className="md:hidden py-4 border-t">
             <div className="flex flex-col space-y-3">
               <Link to="/" className="text-gray-700 py-2">Home</Link>
+              <Link to="/about" className="text-gray-700 py-2">About</Link>
               <Link to="/borrower" className="text-gray-700 py-2">Borrowers</Link>
               <Link to="/lender" className="text-gray-700 py-2">Lenders</Link>
               <Link to="/sacco" className="text-gray-700 py-2">SACCOs</Link>
