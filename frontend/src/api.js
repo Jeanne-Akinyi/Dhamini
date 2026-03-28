@@ -8,10 +8,11 @@
  * If not set, defaults to localhost:4000 for development.
  *
  * Usage:
- *   import { dhaminiApi, withAuth } from '@/api/api';
+ *   import api from '@/api';
+ *   import { withAuth } from '@/api';
  *
  *   // Authenticated request (automatic token)
- *   const response = await dhaminiApi.get('/auth/profile');
+ *   const response = await api.get('/auth/profile');
  *
  *   // Manual auth header
  *   const response = await axios.get('/api/loans', withAuth(token));
@@ -207,3 +208,6 @@ export const API_ENDPOINTS = {
   // Health
   HEALTH: '/health',
 };
+
+// Re-export the axios instance as default for convenience
+export default dhaminiApi;
