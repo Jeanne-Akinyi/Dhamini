@@ -26,13 +26,19 @@ module.exports = (sequelize) => {
     },
     password: {
       type: DataTypes.STRING(255),
-      allowNull: false,
+      allowNull: true,
       set(value) {
         if (value) {
           const hashedPassword = bcrypt.hashSync(value, 10);
           this.setDataValue('password', hashedPassword);
         }
       }
+    },
+    supabaseUserId: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      unique: true,
+      comment: 'User ID from Supabase Auth'
     },
     role: {
       type: DataTypes.ENUM('borrower', 'lender', 'admin', 'sacco_admin', 'chama_admin', 'field_agent', 'regulator'),

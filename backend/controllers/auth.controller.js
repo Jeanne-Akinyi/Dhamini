@@ -2,19 +2,26 @@ const { User } = require('../models');
 const jwtService = require('../services/jwt.service');
 const { success } = require('../utils/response.util');
 const { AppError, asyncHandler } = require('../middleware/authHandler');
-const { generateOTP, sendOTP } = require('../services/otp.service');
-const { cache } = require('../config/redis.config');
+const supabaseService = require('../config/supabase.config');
+const { sendOTP, verifyOTP, getUserById, updateUserMetadata, refreshSession, signOut } = supabaseService;
 const { Op } = require('sequelize');
 
 /**
  * Register a new user
+ * Stores user in local DB for business logic
+ * Sends OTP via Supabase Auth
  */
 const register = asyncHandler(async (req, res) => {
-  const { phoneNumber, email, password, role, firstName, lastName } = req.body;
+  const { phoneNumber, email, role, firstName, lastName } = req.body;
+
+  // Normalize phone number to international format
+  const normalizedPhone = phoneNumber.startsWith('+') 
+    ? phoneNumber 
+    : `+254${phoneNumber.substring(1)}`;
 
   // Build where clause with only defined values
   const whereConditions = [];
-  if (phoneNumber) whereConditions.push({ phoneNumber });
+  if (normalizedPhone) whereConditions.push({ phoneNumber: normalizedPhone });
   if (email) whereConditions.push({ email });
 
   // Check if user already exists
@@ -26,25 +33,22 @@ const register = asyncHandler(async (req, res) => {
     throw new AppError('User with this phone number or email already exists', 409);
   }
 
-  // Create user
+  // Create user in local database
   const user = await User.create({
-    phoneNumber,
+    phoneNumber: normalizedPhone,
     email,
-    password,
     role: role || 'borrower',
     firstName,
     lastName,
-    status: 'pending'
+    status: 'pending',
+    isPhoneVerified: false
   });
 
-  // Generate and send OTP
-  const otp = generateOTP();
-  await cache.set(`otp:${user.id}`, otp, 300); // 5 minutes expiry
+  // Send OTP via Supabase Auth
+  const otpResult = await sendOTP(normalizedPhone);
 
-  try {
-    await sendOTP(phoneNumber, otp);
-  } catch (error) {
-    console.error('Failed to send OTP:', error);
+  if (!otpResult.success) {
+    console.error('Failed to send OTP:', otpResult.error);
     // Continue with registration even if OTP fails
   }
 
@@ -62,28 +66,45 @@ const register = asyncHandler(async (req, res) => {
 
 /**
  * Verify phone number with OTP
+ * Uses Supabase Auth OTP verification
  */
 const verifyPhone = asyncHandler(async (req, res) => {
-  const { userId, otp } = req.body;
+  const { phoneNumber, otp } = req.body;
 
-  const cachedOtp = await cache.get(`otp:${userId}`);
+  // Normalize phone number
+  const normalizedPhone = phoneNumber.startsWith('+') 
+    ? phoneNumber 
+    : `+254${phoneNumber.substring(1)}`;
 
-  if (!cachedOtp || cachedOtp !== otp) {
-    throw new AppError('Invalid or expired OTP', 400);
-  }
-
-  const user = await User.findByPk(userId);
+  // Find user in local database
+  const user = await User.findOne({ where: { phoneNumber: normalizedPhone } });
   if (!user) {
     throw new AppError('User not found', 404);
   }
 
+  // Verify OTP with Supabase
+  const verifyResult = await verifyOTP(normalizedPhone, otp);
+
+  if (!verifyResult.success) {
+    throw new AppError(verifyResult.error || 'Invalid or expired OTP', 400);
+  }
+
+  // Get user's role from Supabase metadata
+  const supabaseUser = await getUserById(verifyResult.user.id);
+
+  // Update user in local database
   user.isPhoneVerified = true;
+  user.supabaseUserId = verifyResult.user.id;
   user.status = 'active';
   await user.save();
 
-  await cache.del(`otp:${userId}`);
+  // Update Supabase user metadata
+  await updateUserMetadata(verifyResult.user.id, {
+    role: user.role,
+    localDbId: user.id
+  });
 
-  // Generate JWT token
+  // Generate JWT token from our backend
   const token = jwtService.generateToken({
     userId: user.id,
     role: user.role,
@@ -92,40 +113,42 @@ const verifyPhone = asyncHandler(async (req, res) => {
 
   return success(res, {
     message: 'Phone number verified successfully',
-    user: user,
-    token
+    user: {
+      id: user.id,
+      phoneNumber: user.phoneNumber,
+      email: user.email,
+      role: user.role,
+      status: user.status
+    },
+    token,
+    supabaseSession: verifyResult.session
   });
 });
 
 /**
- * Login user
+ * Login user with OTP
+ * Sends OTP to user's phone
  */
 const login = asyncHandler(async (req, res) => {
-  const { phoneNumber, email, password } = req.body;
+  const { phoneNumber } = req.body;
 
-  if (!password) {
-    throw new AppError('Password is required', 400);
+  if (!phoneNumber) {
+    throw new AppError('Phone number is required', 400);
   }
 
-  if (!phoneNumber && !email) {
-    throw new AppError('Phone number or email is required', 400);
-  }
+  // Normalize phone number
+  const normalizedPhone = phoneNumber.startsWith('+') 
+    ? phoneNumber 
+    : `+254${phoneNumber.substring(1)}`;
 
-  // Find user
+  // Find user in local database
   const user = await User.findOne({
-    where: phoneNumber 
-      ? { phoneNumber }
-      : { email },
+    where: { phoneNumber: normalizedPhone },
     include: [{ model: require('../models').KYC, as: 'kyc' }]
   });
 
   if (!user) {
-    throw new AppError('Invalid credentials', 401);
-  }
-
-  // Validate password
-  if (!user.validatePassword(password)) {
-    throw new AppError('Invalid credentials', 401);
+    throw new AppError('User not found', 404);
   }
 
   // Check if user is active
@@ -133,21 +156,16 @@ const login = asyncHandler(async (req, res) => {
     throw new AppError('Your account has been suspended', 403);
   }
 
-  // Update last login
-  user.lastLogin = new Date();
-  await user.save();
+  // Send OTP via Supabase
+  const otpResult = await sendOTP(normalizedPhone);
 
-  // Generate JWT token
-  const token = jwtService.generateToken({
-    userId: user.id,
-    role: user.role,
-    institutionId: user.institutionId
-  });
+  if (!otpResult.success) {
+    throw new AppError(otpResult.error || 'Failed to send OTP', 500);
+  }
 
   return success(res, {
-    message: 'Login successful',
-    user,
-    token
+    message: 'OTP sent successfully',
+    phoneNumber: normalizedPhone
   });
 });
 
@@ -155,8 +173,12 @@ const login = asyncHandler(async (req, res) => {
  * Logout user
  */
 const logout = asyncHandler(async (req, res) => {
-  // Invalidate token in Redis (if using refresh tokens)
-  // For now, client-side token removal is sufficient
+  // Invalidate Supabase session if available
+  const { accessToken } = req.body;
+  if (accessToken) {
+    await signOut(accessToken);
+  }
+
   return success(res, {
     message: 'Logout successful'
   });
@@ -164,28 +186,40 @@ const logout = asyncHandler(async (req, res) => {
 
 /**
  * Refresh token
+ * Uses Supabase refresh token
  */
 const refreshToken = asyncHandler(async (req, res) => {
-  const { token } = req.body;
+  const { refreshToken: supabaseRefreshToken } = req.body;
 
-  const decoded = jwtService.verifyToken(token);
-  if (!decoded) {
-    throw new AppError('Invalid token', 401);
+  if (!supabaseRefreshToken) {
+    throw new AppError('Refresh token is required', 400);
   }
 
-  const user = await User.findByPk(decoded.userId);
+  const sessionResult = await refreshSession(supabaseRefreshToken);
+
+  if (!sessionResult.success) {
+    throw new AppError(sessionResult.error || 'Invalid refresh token', 401);
+  }
+
+  // Get user from local database using Supabase user ID
+  const user = await User.findOne({ 
+    where: { supabaseUserId: sessionResult.session.user.id }
+  });
+
   if (!user) {
     throw new AppError('User not found', 404);
   }
 
-  const newToken = jwtService.generateToken({
+  // Generate new JWT token from our backend
+  const token = jwtService.generateToken({
     userId: user.id,
     role: user.role,
     institutionId: user.institutionId
   });
 
   return success(res, {
-    token: newToken
+    token,
+    supabaseSession: sessionResult.session
   });
 });
 
@@ -210,7 +244,19 @@ const getProfile = asyncHandler(async (req, res) => {
     throw new AppError('User not found', 404);
   }
 
-  return success(res, { user });
+  // Get latest user data from Supabase
+  let supabaseUser = null;
+  if (user.supabaseUserId) {
+    const supabaseResult = await getUserById(user.supabaseUserId);
+    if (supabaseResult.success) {
+      supabaseUser = supabaseResult.user;
+    }
+  }
+
+  return success(res, { 
+    user, 
+    supabaseUser 
+  });
 });
 
 /**
@@ -229,7 +275,7 @@ const updateProfile = asyncHandler(async (req, res) => {
   if (lastName) user.lastName = lastName;
   if (email) {
     const existingUser = await User.findOne({
-      where: { email, id: { $ne: userId } }
+      where: { email, id: { [Op.ne]: userId } }
     });
     if (existingUser) {
       throw new AppError('Email already in use', 409);
@@ -238,6 +284,15 @@ const updateProfile = asyncHandler(async (req, res) => {
   }
 
   await user.save();
+
+  // Update Supabase user metadata
+  if (user.supabaseUserId) {
+    await updateUserMetadata(user.supabaseUserId, {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email
+    });
+  }
 
   return success(res, {
     message: 'Profile updated successfully',

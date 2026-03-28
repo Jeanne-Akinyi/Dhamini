@@ -1,7 +1,7 @@
 const axios = require('axios');
 const crypto = require('crypto');
 const logger = require('../utils/logger.util');
-const { cache } = require('../config/redis.config');
+const { set, get } = require('../utils/cache.util');
 
 /**
  * Payment Service
@@ -173,12 +173,12 @@ async function getMpesaAccessToken() {
     
     const token = response.data.access_token;
     
-    // Cache token for 1 hour (token expires in 1 hour)
+    // Cache token for 1 hour (token expires in 1 hour) - 3599000 milliseconds
     const cacheKey = 'mpesa:access_token';
-    const cachedToken = await cache.get(cacheKey);
+    const cachedToken = get(cacheKey);
     
     if (!cachedToken) {
-      await cache.set(cacheKey, token, 3599);
+      set(cacheKey, token, 3599000);
     }
     
     return token;
