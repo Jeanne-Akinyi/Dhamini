@@ -1,39 +1,62 @@
 const { Sequelize } = require('sequelize');
 const logger = require('../utils/logger.util');
-const redis = require('./redis.config');
 
 // Database configuration
 const databaseUrl = process.env.DATABASE_URL || process.env.SUPABASE_DATABASE_URL;
-const sequelize = new Sequelize(
-  databaseUrl || '', // Use connection string if available
-  !databaseUrl ? {
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT) || 5432,
-    database: process.env.DB_NAME || 'dhamini_db',
-    username: process.env.DB_USER || 'dhamini_user',
-    password: process.env.DB_PASSWORD || 'password'
-  } : undefined,
-  {
-    dialect: 'postgres',
-    dialectOptions: {
-      ssl: process.env.NODE_ENV === 'production' || process.env.DATABASE_URL ? {
-        require: true,
-        rejectUnauthorized: false // Accept self-signed certificates from Supabase
-      } : false
-    },
-    logging: process.env.NODE_ENV === 'development' ? (msg) => logger.debug(msg) : false,
-    pool: {
-      max: parseInt(process.env.DB_POOL_MAX) || 20,
-      min: parseInt(process.env.DB_POOL_MIN) || 5,
-      acquire: 30000,
-      idle: 10000
-    },
-    define: {
-      timestamps: true,
-      underscored: false,
-      freezeTableName: true
+
+// If DATABASE_URL is provided, use it directly; otherwise use individual params
+const sequelizeConfig = databaseUrl
+  ? {
+      dialect: 'postgres',
+      dialectOptions: {
+        ssl: process.env.NODE_ENV === 'production' || process.env.DATABASE_URL ? {
+          require: true,
+          rejectUnauthorized: false
+        } : false
+      },
+      logging: process.env.NODE_ENV === 'development' ? (msg) => logger.debug(msg) : false,
+      pool: {
+        max: parseInt(process.env.DB_POOL_MAX) || 20,
+        min: parseInt(process.env.DB_POOL_MIN) || 5,
+        acquire: 30000,
+        idle: 10000
+      },
+      define: {
+        timestamps: true,
+        underscored: false,
+        freezeTableName: true
+      }
     }
-  }
+  : {
+      dialect: 'postgres',
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT) || 5432,
+      database: process.env.DB_NAME || 'dhamini_db',
+      username: process.env.DB_USER || 'dhamini_user',
+      password: process.env.DB_PASSWORD || 'password',
+      dialectOptions: {
+        ssl: process.env.NODE_ENV === 'production' ? {
+          require: true,
+          rejectUnauthorized: false
+        } : false
+      },
+      logging: process.env.NODE_ENV === 'development' ? (msg) => logger.debug(msg) : false,
+      pool: {
+        max: parseInt(process.env.DB_POOL_MAX) || 20,
+        min: parseInt(process.env.DB_POOL_MIN) || 5,
+        acquire: 30000,
+        idle: 10000
+      },
+      define: {
+        timestamps: true,
+        underscored: false,
+        freezeTableName: true
+      }
+    };
+
+const sequelize = new Sequelize(
+  databaseUrl || 'postgres://dhamini_user:password@localhost:5432/dhamini_db',
+  sequelizeConfig
 );
 
 // Test database connection
@@ -71,7 +94,6 @@ const initializeDatabase = async (force = false) => {
 const closeConnection = async () => {
   try {
     await sequelize.close();
-    await redis.disconnect();
     logger.info('Database connections closed successfully');
   } catch (error) {
     logger.error('Error closing database connections:', error);

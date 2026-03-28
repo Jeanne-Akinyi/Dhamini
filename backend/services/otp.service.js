@@ -1,6 +1,6 @@
 const axios = require('axios');
 const logger = require('../utils/logger.util');
-const { cache } = require('../config/redis.config');
+const { set, get, del } = require('../utils/cache.util');
 
 /**
  * OTP Service
@@ -29,8 +29,8 @@ const generateOTP = (length = 6) => {
  */
 const sendOTP = async (phoneNumber, otp) => {
   try {
-    // Store OTP in cache
-    await cache.set(`otp:${phoneNumber}`, otp, 300); // 5 minutes
+    // Store OTP in cache (300 seconds = 5 minutes = 300000 milliseconds)
+    set(`otp:${phoneNumber}`, otp, 300000);
     
     // In development, log OTP instead of sending SMS
     if (process.env.NODE_ENV === 'development') {
@@ -77,7 +77,7 @@ const sendOTP = async (phoneNumber, otp) => {
  */
 const verifyOTP = async (phoneNumber, otp) => {
   try {
-    const cachedOtp = await cache.get(`otp:${phoneNumber}`);
+    const cachedOtp = get(`otp:${phoneNumber}`);
     
     if (!cachedOtp) {
       return { valid: false, message: 'OTP has expired' };
@@ -88,7 +88,7 @@ const verifyOTP = async (phoneNumber, otp) => {
     }
     
     // Delete OTP after successful verification
-    await cache.del(`otp:${phoneNumber}`);
+    del(`otp:${phoneNumber}`);
     
     return { valid: true };
   } catch (error) {
@@ -102,10 +102,10 @@ const verifyOTP = async (phoneNumber, otp) => {
  */
 const checkRateLimit = async (phoneNumber) => {
   const key = `otp-rate:${phoneNumber}`;
-  const attempts = await cache.get(key);
+  const attempts = get(key);
   
   if (!attempts) {
-    await cache.set(key, 1, 3600); // Reset after 1 hour
+    set(key, 1, 3600000); // Reset after 1 hour (3600000 milliseconds)
     return { allowed: true, attemptsRemaining: 5 };
   }
   
@@ -113,7 +113,7 @@ const checkRateLimit = async (phoneNumber) => {
     return { allowed: false, message: 'Too many OTP requests. Please try again later.' };
   }
   
-  await cache.set(key, attempts + 1, 3600);
+  set(key, attempts + 1, 3600000);
   return { allowed: true, attemptsRemaining: 5 - (attempts + 1) };
 };
 

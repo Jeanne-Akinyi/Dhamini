@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 const { AppError } = require('./authHandler');
 const logger = require('../utils/logger.util');
-const { cache } = require('../config/redis.config');
+const { get } = require('../utils/cache.util');
 const { verifyToken } = require('../services/jwt.service');
 
 /**
@@ -21,7 +21,7 @@ const authenticate = async (req, res, next) => {
     const token = authHeader.substring(7);
 
     // Check if token is blacklisted (for logout functionality)
-    const isBlacklisted = await cache.get(`blacklist:${token}`);
+    const isBlacklisted = get(`blacklist:${token}`);
     if (isBlacklisted) {
       throw new AppError('Token has been revoked', 401);
     }
