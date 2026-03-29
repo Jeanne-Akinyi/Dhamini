@@ -27,7 +27,7 @@ if (require.main === module) {
   const force = args.includes('--force');
   
   if (force) {
-    logger.warn('⚠️  Running with --force flag. This will DROP ALL TABLES!');
+    logger.warn('WARNING: Running with --force flag. This will DROP ALL TABLES!');
   }
   
   initialize();

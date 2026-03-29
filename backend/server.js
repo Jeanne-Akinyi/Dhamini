@@ -155,41 +155,40 @@ app.use(errorHandler);
 // Start server
 app.listen(PORT, async () => {
   console.log(`
-╔═════════════════════════════════════════════════════════════════╗
-║                                                               ║
-║         DHAMINI API SERVER STARTED                      ║
-║                                                               ║
-║    Consent-based Automated Loan Repayment &                  ║
-║    Credit Intelligence Platform                                ║
-║                                                               ║
-║    Target Market: Kenya & East Africa                        ║
-║    Blockchain: Hyperledger Fabric Network                    ║
-║                                                               ║
-║    ────────────────────────────────────────────────────────   ║
-║                                                               ║
-║    Server: http://localhost:${PORT}                            ║
-║    Health: http://localhost:${PORT}/health                     ║
-║    API Docs: http://localhost:${PORT}/api                      ║
-║                                                               ║
-║    Ready for:                                                  ║
-║    • Bank-SACCO-Chama Integration                             ║
-║    • M-Pesa STK Push + Bank Debits                            ║
-║    • IPRS/KRA Identity Verification                           ║
-║    • Automated Mandate Execution                              ║
-║    • AI Credit Scoring (DCS)                                  ║
-║                                                               ║
-╚═════════════════════════════════════════════════════════════════╝
+=================================================================
+           DHAMINI API SERVER STARTED
+=================================================================
+   Consent-based Automated Loan Repayment &
+   Credit Intelligence Platform
+
+   Target Market: Kenya & East Africa
+   Blockchain: Hyperledger Fabric Network
+
+   --------------------------------------------------------------
+
+   Server: http://localhost:${PORT}
+   Health: http://localhost:${PORT}/health
+   API Docs: http://localhost:${PORT}/api
+
+   Ready for:
+   - Bank-SACCO-Chama Integration
+   - M-Pesa STK Push + Bank Debits
+   - IPRS/KRA Identity Verification
+   - Automated Mandate Execution
+   - AI Credit Scoring (DCS)
+
+=================================================================
   `);
 
   // Initialize services
   try {
     await initializeDatabase();
-    logger.info('✅ Database initialized successfully');
+    logger.info('Database initialized successfully');
     await initializeScheduler();
-    logger.info('✅ Scheduler initialized successfully');
-    logger.info('🚀 Dhamini server ready to accept requests');
+    logger.info('Scheduler initialized successfully');
+    logger.info('Dhamini server ready to accept requests');
   } catch (error) {
-    logger.error('❌ Failed to initialize services:', error);
+    logger.error('Failed to initialize services:', error);
     process.exit(1);
   }
 });

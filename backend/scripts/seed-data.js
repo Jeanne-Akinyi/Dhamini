@@ -331,7 +331,7 @@ if (require.main === module) {
   const force = args.includes('--force');
   
   if (force) {
-    logger.warn('⚠️  Running with --force flag. Existing data may be affected.');
+    logger.warn('WARNING: Running with --force flag. Existing data may be affected.');
   }
   
   seedData();

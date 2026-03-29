@@ -15,29 +15,48 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
-// Validate configuration
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.warn('⚠️  Supabase configuration incomplete');
-  console.warn('   Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env');
-}
+// Check if Supabase is properly configured (not placeholder values)
+const isSupabaseConfigured = supabaseUrl && 
+  supabaseServiceKey && 
+  !supabaseUrl.includes('placeholder') && 
+  !supabaseServiceKey.includes('placeholder');
 
-// Create Supabase client with service role (for admin operations)
-const supabaseAdmin = createClient(
-  supabaseUrl,
-  supabaseServiceKey,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    }
+// Create mock clients for when Supabase is not configured
+let supabaseAdmin = null;
+let supabaseClient = null;
+
+if (isSupabaseConfigured) {
+  try {
+    supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: { autoRefreshToken: false, persistSession: false }
+    });
+    supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+    console.log('Supabase client initialized successfully');
+  } catch (error) {
+    console.warn('WARNING: Failed to initialize Supabase client:', error.message);
   }
-);
-
-// Create Supabase client with anon key (for client operations from backend)
-const supabaseClient = createClient(
-  supabaseUrl,
-  supabaseAnonKey
-);
+} else {
+  console.warn('WARNING: Supabase not configured - OTP features will be disabled');
+  console.warn('   Please set SUPABASE_URL, SUPABASE_ANON_KEY, and SUPABASE_SERVICE_ROLE_KEY in .env');
+  
+  // Create mock clients that return appropriate errors
+  supabaseAdmin = {
+    auth: {
+      admin: {
+        getUserById: async () => ({ data: { user: null }, error: { message: 'Supabase not configured' } }),
+        updateUserById: async () => ({ data: { user: null }, error: null })
+      }
+    }
+  };
+  supabaseClient = {
+    auth: {
+      signInWithOtp: async () => ({ data: null, error: { message: 'Supabase not configured' } }),
+      verifyOtp: async () => ({ data: null, error: { message: 'Supabase not configured' } }),
+      refreshSession: async () => ({ data: null, error: { message: 'Supabase not configured' } }),
+      signOut: async () => ({ error: null })
+    }
+  };
+}
 
 /**
  * Send OTP to user's phone number using Supabase Auth
@@ -218,6 +237,66 @@ const refreshSession = async (refreshToken) => {
   }
 };
 
+/**
+ * Create user in Supabase Auth (admin API)
+ * Creates user directly without OTP
+ * 
+ * @param {string} phone - Phone number
+ * @param {Object} metadata - User metadata (firstName, lastName, role)
+ * @returns {Promise<Object>} Created user data
+ */
+const createUser = async (phone, metadata = {}) => {
+  try {
+    const { data, error } = await supabaseAdmin.auth.admin.createUser({
+      phone: phone,
+      phone_confirm: true,
+      user_metadata: metadata
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    return {
+      success: true,
+      user: data.user
+    };
+  } catch (error) {
+    console.error('Error creating user in Supabase:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+};
+
+/**
+ * Delete user from Supabase Auth
+ * 
+ * @param {string} userId - User ID
+ * @returns {Promise<Object>} Response
+ */
+const deleteUser = async (userId) => {
+  try {
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
+
+    if (error) {
+      throw error;
+    }
+
+    return {
+      success: true,
+      message: 'User deleted successfully'
+    };
+  } catch (error) {
+    console.error('Error deleting user from Supabase:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+};
+
 module.exports = {
   supabaseAdmin,
   supabaseClient,
@@ -226,5 +305,7 @@ module.exports = {
   getUserById,
   updateUserMetadata,
   signOut,
-  refreshSession
+  refreshSession,
+  createUser,
+  deleteUser
 };

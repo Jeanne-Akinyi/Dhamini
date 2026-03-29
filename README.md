@@ -1,6 +1,8 @@
 # Dhamini
+
 Dhamini (Swahili for "Guarantee") is a middleware platform designed to automate loan repayments and create a unified credit scoring system for the Kenyan market.
-# 🏦 Dhamini — Swahili for "Guarantee"
+
+## Dhamini - Swahili for "Guarantee"
 
 **Automated Loan Repayment & Credit Infrastructure Middleware**
 
@@ -8,48 +10,54 @@ Dhamini is a consent-based automated loan repayment and credit intelligence plat
 
 ---
 
-## 🚀 The Problem
-Lenders in Kenya face a 20–35% default rate and spend up to 30% of their budgets chasing payments. Meanwhile, borrowers pay high interest because their positive repayment history in SACCOs or Chamas is invisible to formal banks.
+## The Problem
 
-## ✨ Core Pillars
+Lenders in Kenya face a 20-35% default rate and spend up to 30% of their budgets chasing payments. Meanwhile, borrowers pay high interest because their positive repayment history in SACCOs or Chamas is invisible to formal banks.
+
+## Core Pillars
+
 * **Consent-based Automated Deduction:** Automated repayment via M-Pesa Daraja, Bank APIs, and SACCO payroll systems.
 * **Universal KYC Layer:** A single identity verification (IPRS/KRA) shared across institutions with borrower consent.
 * **AI Credit Scoring (DCS):** A live score built from real repayment behavior across all platforms, not just CRB history.
 * **Blockchain Audit Trail:** Every mandate and repayment is logged immutably on the Polygon network for transparency.
 
-## 🛠️ Technical Stack
+## Technical Stack
+
 - **Backend:** Python (FastAPI), Node.js (Microservices), Apache Kafka
 - **Frontend:** React (Web), React Native (Mobile), Africa's Talking (USSD)
 - **Database:** PostgreSQL, TimescaleDB (Time-series), Redis
 - **Blockchain:** Solidity Smart Contracts (Polygon PoS)
 - **Payments:** M-Pesa Daraja API, PesaLink, Bank Open APIs
 
-## 🏗️ System Architecture
+## System Architecture
+
 Dhamini operates as a five-layer middleware system:
+
 1. **Frontend:** Borrower portal, Lender dashboard, and Field agent app.
 2. **API Gateway:** Auth, Universal KYC, and Consent management.
 3. **Middleware Core:** Mandate engine, Deduction scheduler, and Payment adapters.
 4. **AI Engine:** ML models for Credit Scoring and Salary Detection.
 5. **External Integrations:** Safaricom Daraja, IPRS, KRA, and Commercial Banks.
 
-## 📅 Hackathon Roadmap (Phase 1 MVP)
+## Hackathon Roadmap (Phase 1 MVP)
+
 - [x] Backend API with Hyperledger Fabric integration
 - [x] Database models and relationships
 - [x] Authentication & authorization system
-- [ ] M-Pesa STK Push mandate flow (in development)
+- [x] M-Pesa STK Push integration
+- [x] Supabase Auth integration
 - [ ] Digital Mandate hashing to Hyperledger Fabric network (in development)
-- [ ] Automated repayment simulation via Daraja Sandbox (in development)
-- [ ] Real-time DCS (Dhamini Credit Score) update (in development)
-- [ ] Basic Lender & Borrower Dashboards (in development)
+- [ ] Automated repayment simulation via Daraja Sandbox
+- [ ] Real-time DCS (Dhamini Credit Score) update
+- [ ] Basic Lender & Borrower Dashboards
 
-## Authors:
+## Authors
 
-- **Jeanne-Akinyi**- Leader/Frontend Developer
-- **Humphrey Maina**- Backend/Blockchain Developer
-- **Samson Roy**- Backend Developer
+- **Jeanne-Akinyi** - Leader/Frontend Developer
+- **Humphrey Maina** - Backend/Blockchain Developer
+- **Samson Roy** - Backend Developer
 
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 dhamini/
@@ -57,67 +65,69 @@ dhamini/
 │   ├── config/                # Configuration files
 │   │   ├── database.config.js # PostgreSQL/Sequelize setup
 │   │   ├── redis.config.js    # Redis caching layer
-│   │   └── fabric.config.js   # Hyperledger Fabric network config
+│   │   ├── supabase.config.js # Supabase integration
+│   │   └── fabric.config.js  # Hyperledger Fabric network config
 │   ├── controllers/           # Request handlers
-│   │   ├── auth.controller.js      # User authentication
-│   │   ├── kyc.controller.js       # KYC verification
-│   │   ├── loan.controller.js      # Loan management
-│   │   ├── repayment.controller.js # Payment processing
-│   │   └── creditScore.controller.js # Credit scoring
-│   ├── middleware/            # Express middleware
-│   │   ├── auth.middleware.js      # JWT verification & authorization
-│   │   └── authHandler.js           # Error handling
-│   ├── models/                # Sequelize ORM models
-│   │   ├── User.js           # User accounts & roles
-│   │   ├── KYC.js            # Multi-tier KYC data
-│   │   ├── Institution.js    # Lender profiles
-│   │   ├── Loan.js           # Loan lifecycle
-│   │   ├── Mandate.js        # Debit mandates
-│   │   ├── Repayment.js      # Payment records
-│   │   ├── CreditScore.js    # DCS scoring
-│   │   ├── BlockchainRecord.js # Audit trails
-│   │   └── index.js          # Model associations
-│   ├── routes/               # API route definitions
-│   │   └── index.js          # Consolidated routes
-│   ├── services/             # Business logic layer
-│   │   ├── jwt.service.js           # Token management
-│   │   ├── otp.service.js           # OTP generation & SMS
-│   │   ├── payment.service.js       # M-Pesa & bank payments
-│   │   ├── scheduler.service.js     # Payment scheduling
-│   │   ├── credit-scoring.service.js # DCS algorithm
-│   │   ├── verification.service.js  # IPRS/KRA verification
-│   │   └── ledger-gateway.service.js # Fabric integration
-│   ├── utils/                # Utility functions
-│   │   ├── logger.util.js    # Winston logging
-│   │   ├── response.util.js  # Standardized responses
-│   │   ├── encryption.util.js # AES-256 encryption
-│   │   └── reference.util.js # Reference number generation
-│   ├── scripts/              # Initialization scripts
-│   │   ├── init-db.js        # Database setup
-│   │   └── seed-data.js      # Test data generation
-│   ├── tests/                # Test files (to be added)
-│   ├── .env.example         # Environment template
-│   ├── package.json          # Dependencies & scripts
-│   └── server.js             # Express server entry point
+│   │   ├── auth.controller.js       # User authentication
+│   │   ├── kyc.controller.js        # KYC verification
+│   │   ├── loan.controller.js       # Loan management
+│   │   ├── mpesa.controller.js     # M-Pesa Daraja API
+│   │   ├── repayment.controller.js  # Payment processing
+│   │   └── creditScore.controller.js# Credit scoring
+│   ├── middleware/           # Express middleware
+│   │   ├── auth.middleware.js       # JWT verification & authorization
+│   │   └── authHandler.js          # Error handling
+│   ├── models/               # Sequelize ORM models
+│   │   ├── User.js          # User accounts & roles
+│   │   ├── KYC.js           # Multi-tier KYC data
+│   │   ├── Institution.js   # Lender profiles
+│   │   ├── Loan.js          # Loan lifecycle
+│   │   ├── Mandate.js       # Debit mandates
+│   │   ├── Repayment.js     # Payment records
+│   │   ├── CreditScore.js   # DCS scoring
+│   │   ├── BlockchainRecord.js# Audit trails
+│   │   └── index.js         # Model associations
+│   ├── routes/              # API route definitions
+│   │   └── index.js         # Consolidated routes
+│   ├── services/            # Business logic layer
+│   │   ├── jwt.service.js          # Token management
+│   │   ├── otp.service.js          # OTP generation & SMS
+│   │   ├── payment.service.js      # M-Pesa & bank payments
+│   │   ├── scheduler.service.js    # Payment scheduling
+│   │   ├── credit-scoring.service.js# DCS algorithm
+│   │   ├── verification.service.js # IPRS/KRA verification
+│   │   └── ledger-gateway.service.js# Fabric integration
+│   ├── utils/               # Utility functions
+│   │   ├── logger.util.js   # Winston logging
+│   │   ├── response.util.js# Standardized responses
+│   │   ├── encryption.util.js# AES-256 encryption
+│   │   └── reference.util.js# Reference number generation
+│   ├── scripts/             # Initialization scripts
+│   │   ├── init-db.js      # Database setup
+│   │   └── seed-data.js    # Test data generation
+│   ├── tests/               # Test files (to be added)
+│   ├── .env.example        # Environment template
+│   ├── package.json         # Dependencies & scripts
+│   └── server.js           # Express server entry point
 │
-├── frontend/                 # React Web Application
-│   ├── public/               # Static assets
+├── frontend/                # React Web Application
+│   ├── public/              # Static assets
 │   ├── src/
-│   │   ├── api/              # API integration
-│   │   │   └── api.js        # Axios client setup
-│   │   ├── assets/           # Images, icons
-│   │   └── components/       # React components (to be added)
+│   │   ├── api/             # API integration
+│   │   │   └── api.js       # Axios client setup
+│   │   ├── assets/          # Images, icons
+│   │   └── components/      # React components
 │   ├── .gitignore
 │   └── package.json
 │
-├── Docker/                   # Docker configurations (to be added)
-├── Docs/                     # Documentation
-│   └── PROJECT_STRUCTURE.md  # Detailed system specs
+├── Docker/                  # Docker configurations (to be added)
+├── Docs/                    # Documentation
+│   └── PROJECT_STRUCTURE.md # Detailed system specs
 ├── .gitignore
-└── README.md                 # This file
+└── README.md                # This file
 ```
 
-## 🔧 How It Works
+## How It Works
 
 ### User Flow
 
@@ -190,15 +200,17 @@ dhamini/
 - **PostgreSQL**: Primary database with connection pooling (5-20 connections)
 - **Winston Logger**: Tracks all operations with file rotation
 
-## ✨ Key Features
+## Key Features
 
 ### 1. Multi-tier KYC System
+
 - **TIER 1**: Full name, phone, national ID, date of birth, gender (self-verified)
 - **TIER 2**: KRA PIN verified with IPRS and KRA APIs, income source
 - **TIER 3**: Bank account ownership & M-Pesa wallet verified
 - **TIER 4**: Biometric liveness, face matching, employer contact, employment proof
 
 ### 2. Consent-based Digital Mandates
+
 - Multiple payment methods: M-Pesa STK Push, Bank Direct Debit, Standing Order
 - OTP-verified digital signatures
 - Flexible scheduling (daily, weekly, bi-weekly, monthly)
@@ -206,6 +218,7 @@ dhamini/
 - Blockchain hash for immutability
 
 ### 3. Automated Payment Processing
+
 - Daily cron job processes scheduled repayments
 - M-Pesa STK Push for mobile money deductions
 - Bank APIs for direct debit transactions
@@ -214,6 +227,7 @@ dhamini/
 - Notifications sent to lender and borrower
 
 ### 4. AI Credit Scoring (DCS)
+
 - Dynamic scoring adapts to real-time repayment behavior
 - Weights: Consistency (35%), History (20%), Utilization (15%), Income (15%), Diversity (10%), Fraud (5%)
 - Risk tiers from AAA (excellent) to F (poor) with 300-1000 score range
@@ -221,6 +235,7 @@ dhamini/
 - Score history tracking for trend analysis
 
 ### 5. Role-Based Access Control
+
 - **Borrower**: Access own loans, KYC status, credit score, repayments
 - **Lender**: Manage loans, approve applications, view repayment reports
 - **SACCO Admin**: Manage SACCO loans and members
@@ -228,6 +243,7 @@ dhamini/
 - **Admin**: Full system access, KYC approvals, institution management
 
 ### 6. Hyperledger Fabric Integration
+
 - Channel: dhaminichannel
 - Chaincode: dhaminicontract
 - Records mandates, repayments, credit score changes
@@ -235,6 +251,7 @@ dhamini/
 - Immutable audit trail for regulatory compliance
 
 ### 7. Multi-Institution Support
+
 - Commercial Banks
 - SACCOs (Savings & Credit Cooperative Organizations)
 - Chamas (Informal investment groups)
@@ -242,6 +259,7 @@ dhamini/
 - Digital Lenders
 
 ### 8. Payment Versatility
+
 - M-Pesa Daraja API (STK Push, C2B, B2C)
 - Bank Open APIs (PesaLink compatible)
 - Payroll deduction systems
@@ -249,24 +267,29 @@ dhamini/
 - Cash payments via M-Pesa agents
 
 ### 9. External API Integration
+
 - **IPRS**: National ID verification
 - **KRA**: Tax compliance & PIN validation
 - **Africa's Talking**: SMS gateway for OTP
 - **M-Pesa Daraja**: Mobile money payments
 - **CRB**: Credit bureau checks (optional)
+- **Supabase**: Authentication and database
 
 ### 10. Security Features
+
 - AES-256 encryption for sensitive data at rest
 - SHA-256 hashing for passwords and blockchain references
 - JWT-based authentication with refresh tokens
+- Supabase Auth integration for secure authentication
 - Rate limiting on OTP endpoint (5 attempts/hour)
 - Input validation on all API endpoints
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
-- PostgreSQL 14+
+- PostgreSQL 14+ (or Supabase cloud database)
 - Redis 7+
 - Hyperledger Fabric network (or use development mode)
 
@@ -302,17 +325,30 @@ npm run dev     # Development with auto-reload
 
 6. Access API:
 - Health check: http://localhost:4000/health
-- API documentation: http://localhost:4000/api, http://localhost:4000/api-docs 
+- API documentation: http://localhost:4000/api, http://localhost:4000/api-docs
 
-### Frontend Setup (Coming Soon)
+### Frontend Setup
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
+The app will be available at http://localhost:5173
+
+### M-Pesa Sandbox Testing
+
+For testing M-Pesa integration:
+
+1. Get sandbox credentials from https://developer.safaricom.co.ke/sandbox
+2. Configure in .env:
+   - MPESA_CONSUMER_KEY
+   - MPESA_CONSUMER_SECRET
+   - MPESA_PASSKEY
+   - MPESA_SHORTCODE
+3. Use the sandbox simulator at https://developer.safaricom.co.ke/sandbox to simulate payments
+
 ---
-
-
 
 **License:** Confidential & Proprietary

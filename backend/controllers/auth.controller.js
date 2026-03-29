@@ -3,13 +3,12 @@ const jwtService = require('../services/jwt.service');
 const { success } = require('../utils/response.util');
 const { AppError, asyncHandler } = require('../middleware/authHandler');
 const supabaseService = require('../config/supabase.config');
-const { sendOTP, verifyOTP, getUserById, updateUserMetadata, refreshSession, signOut } = supabaseService;
+const { sendOTP, verifyOTP, getUserById, updateUserMetadata, refreshSession, signOut, createUser } = supabaseService;
 const { Op } = require('sequelize');
 
 /**
  * Register a new user
- * Stores user in local DB for business logic
- * Sends OTP via Supabase Auth
+ * Creates user in Supabase Auth first, then stores in local DB
  */
 const register = asyncHandler(async (req, res) => {
   const { phoneNumber, email, role, firstName, lastName } = req.body;
@@ -24,7 +23,7 @@ const register = asyncHandler(async (req, res) => {
   if (normalizedPhone) whereConditions.push({ phoneNumber: normalizedPhone });
   if (email) whereConditions.push({ email });
 
-  // Check if user already exists
+  // Check if user already exists in local DB
   const existingUser = whereConditions.length > 0 
     ? await User.findOne({ where: { [Op.or]: whereConditions } })
     : null;
@@ -33,7 +32,18 @@ const register = asyncHandler(async (req, res) => {
     throw new AppError('User with this phone number or email already exists', 409);
   }
 
-  // Create user in local database
+  // Create user in Supabase Auth first
+  const supabaseResult = await createUser(normalizedPhone, {
+    firstName,
+    lastName,
+    role: role || 'borrower'
+  });
+
+  if (!supabaseResult.success) {
+    throw new AppError('Failed to create user: ' + supabaseResult.error, 500);
+  }
+
+  // Create user in local database with Supabase user ID
   const user = await User.create({
     phoneNumber: normalizedPhone,
     email,
@@ -41,25 +51,19 @@ const register = asyncHandler(async (req, res) => {
     firstName,
     lastName,
     status: 'pending',
-    isPhoneVerified: false
+    isPhoneVerified: true,
+    supabaseUserId: supabaseResult.user.id
   });
 
-  // Send OTP via Supabase Auth
-  const otpResult = await sendOTP(normalizedPhone);
-
-  if (!otpResult.success) {
-    console.error('Failed to send OTP:', otpResult.error);
-    // Continue with registration even if OTP fails
-  }
-
   return success(res, {
-    message: 'User registered successfully. Please verify your phone number.',
+    message: 'User registered successfully.',
     user: {
       id: user.id,
       phoneNumber: user.phoneNumber,
       email: user.email,
       role: user.role,
-      status: user.status
+      status: user.status,
+      supabaseId: supabaseResult.user.id
     }
   }, 201);
 });

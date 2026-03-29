@@ -60,6 +60,7 @@ const kycController = require('../controllers/kyc.controller');
 const loanController = require('../controllers/loan.controller');
 const repaymentController = require('../controllers/repayment.controller');
 const creditScoreController = require('../controllers/creditScore.controller');
+const mpesaController = require('../controllers/mpesa.controller');
 
 // Middleware
 const { authenticate } = require('../middleware/auth.middleware');
@@ -651,6 +652,178 @@ router.post('/credit-score/users/:userId/recalculate', authenticate, creditScore
  */
 router.get('/credit-score/statistics', authenticate, creditScoreController.getScoreStatistics);
 
+// ==================== M-PESA ROUTES ====================
+/**
+ * @swagger
+ * /api/mpesa/config:
+ *   get:
+ *     summary: Check M-Pesa configuration status
+ *     tags: [M-Pesa]
+ *     responses:
+ *       200:
+ *         description: Configuration status
+ */
+router.get('/mpesa/config', mpesaController.getConfig);
+
+/**
+ * @swagger
+ * /api/mpesa/token:
+ *   post:
+ *     summary: Get M-Pesa access token
+ *     tags: [M-Pesa]
+ *     responses:
+ *       200:
+ *         description: Access token
+ */
+router.post('/mpesa/token', mpesaController.getAccessToken);
+
+/**
+ * @swagger
+ * /api/mpesa/stkpush:
+ *   post:
+ *     summary: Initiate STK Push payment
+ *     tags: [M-Pesa]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - phoneNumber
+ *               - amount
+ *             properties:
+ *               phoneNumber:
+ *                 type: string
+ *                 description: Customer phone number
+ *               amount:
+ *                 type: number
+ *                 description: Amount to collect
+ *               accountReference:
+ *                 type: string
+ *                 description: Account reference
+ *               transactionDesc:
+ *                 type: string
+ *                 description: Transaction description
+ *     responses:
+ *       200:
+ *         description: STK Push initiated
+ */
+router.post('/mpesa/stkpush', mpesaController.initiateSTKPush);
+
+/**
+ * @swagger
+ * /api/mpesa/stkquery:
+ *   post:
+ *     summary: Query STK Push status
+ *     tags: [M-Pesa]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - checkoutRequestID
+ *             properties:
+ *               checkoutRequestID:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Query result
+ */
+router.post('/mpesa/stkquery', mpesaController.querySTKStatus);
+
+/**
+ * @swagger
+ * /api/mpesa/b2c:
+ *   post:
+ *     summary: Initiate B2C payment (disbursement)
+ *     tags: [M-Pesa]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - phoneNumber
+ *               - amount
+ *             properties:
+ *               phoneNumber:
+ *                 type: string
+ *               amount:
+ *                 type: number
+ *               remarks:
+ *                 type: string
+ *               occasion:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: B2C payment initiated
+ */
+router.post('/mpesa/b2c', mpesaController.initiateB2CPayment);
+
+/**
+ * @swagger
+ * /api/mpesa/c2b-register:
+ *   post:
+ *     summary: Register C2B callback URLs
+ *     tags: [M-Pesa]
+ *     responses:
+ *       200:
+ *         description: URLs registered
+ */
+router.post('/mpesa/c2b-register', mpesaController.registerC2BURLs);
+
+/**
+ * @swagger
+ * /api/mpesa/c2b-simulate:
+ *   post:
+ *     summary: Simulate C2B transaction (Sandbox only)
+ *     tags: [M-Pesa]
+ *     responses:
+ *       200:
+ *         description: Transaction simulated
+ */
+router.post('/mpesa/c2b-simulate', mpesaController.simulateC2B);
+
+/**
+ * @swagger
+ * /api/mpesa/balance:
+ *   post:
+ *     summary: Query account balance
+ *     tags: [M-Pesa]
+ *     responses:
+ *       200:
+ *         description: Balance query result
+ */
+router.post('/mpesa/balance', mpesaController.queryAccountBalance);
+
+/**
+ * @swagger
+ * /api/mpesa/transaction-status:
+ *   post:
+ *     summary: Query transaction status
+ *     tags: [M-Pesa]
+ *     responses:
+ *       200:
+ *         description: Transaction status
+ */
+router.post('/mpesa/transaction-status', mpesaController.queryTransactionStatus);
+
+/**
+ * @swagger
+ * /api/mpesa/reversal:
+ *   post:
+ *     summary: Reverse a transaction
+ *     tags: [M-Pesa]
+ *     responses:
+ *       200:
+ *         description: Reversal initiated
+ */
+router.post('/mpesa/reversal', mpesaController.reverseTransaction);
+
 // ==================== HEALTH AND INFO ====================
 router.get('/health', (req, res) => {
   res.json({
@@ -735,6 +908,21 @@ router.get('/', (req, res) => {
             recalculate: 'POST /api/credit-score/users/:userId/recalculate',
             updateCRB: 'PUT /api/credit-score/users/:userId/crb',
             statistics: 'GET /api/credit-score/statistics'
+          }
+        },
+        mpesa: {
+          base: '/api/mpesa',
+          methods: {
+            config: 'GET /api/mpesa/config',
+            token: 'POST /api/mpesa/token',
+            stkpush: 'POST /api/mpesa/stkpush',
+            stkquery: 'POST /api/mpesa/stkquery',
+            b2c: 'POST /api/mpesa/b2c',
+            c2bRegister: 'POST /api/mpesa/c2b-register',
+            c2bSimulate: 'POST /api/mpesa/c2b-simulate',
+            balance: 'POST /api/mpesa/balance',
+            transactionStatus: 'POST /api/mpesa/transaction-status',
+            reversal: 'POST /api/mpesa/reversal'
           }
         }
       }
