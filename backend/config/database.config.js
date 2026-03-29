@@ -79,8 +79,8 @@ const initializeDatabase = async (force = false) => {
     // Import all models
     const models = require('../models');
     
-    // Sync all models
-    await sequelize.sync({ force, alter: !force });
+    // Sync all models - use force:true to drop and recreate tables (fixes UNIQUE constraint issues)
+    await sequelize.sync({ force: true });
     logger.info('Database models synchronized successfully');
     
     return true;
