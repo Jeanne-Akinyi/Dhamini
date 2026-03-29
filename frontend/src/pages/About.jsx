@@ -1,5 +1,89 @@
 import React from 'react';
 
+const AlertIcon = () => (
+  <svg className="w-12 h-12 text-yellow-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+  </svg>
+);
+
+const LockIcon = () => (
+  <svg className="w-12 h-12 text-primary-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+  </svg>
+);
+
+const ChartDownIcon = () => (
+  <svg className="w-12 h-12 text-red-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+  </svg>
+);
+
+const ShieldIcon = () => (
+  <svg className="w-12 h-12 text-primary-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+  </svg>
+);
+
+const ChartUpIcon = () => (
+  <svg className="w-12 h-12 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+  </svg>
+);
+
+const UsersIcon = () => (
+  <svg className="w-12 h-12 text-purple-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+  </svg>
+);
+
+const BlockchainIcon = () => (
+  <svg className="w-12 h-12 text-orange-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+  </svg>
+);
+
+const ChartStatsIcon = () => (
+  <svg className="w-10 h-10 text-blue-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+  </svg>
+);
+
+const BotIcon = () => (
+  <svg className="w-10 h-10 text-purple-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+  </svg>
+);
+
+const PercentageIcon = () => (
+  <svg className="w-10 h-10 text-red-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+  </svg>
+);
+
+const SecurityIcon = () => (
+  <svg className="w-10 h-10 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+  </svg>
+);
+
+const LinkIcon = () => (
+  <svg className="w-12 h-12 text-primary-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+  </svg>
+);
+
+const CloudIcon = () => (
+  <svg className="w-12 h-12 text-blue-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+  </svg>
+);
+
 const About = () => {
   return (
     <div className="min-h-screen bg-white">
@@ -66,26 +150,26 @@ const About = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-sm">
-              <div className="text-4xl mb-4">⚠️</div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">High Default Rates</h3>
-              <p className="text-gray-600">
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+              <AlertIcon />
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 mt-4 text-center">High Default Rates</h3>
+              <p className="text-gray-600 text-center">
                 Traditional lending sees default rates of 35-40% due to manual collection processes and lack of automated repayment infrastructure.
               </p>
             </div>
 
-            <div className="bg-white p-8 rounded-xl shadow-sm">
-              <div className="text-4xl mb-4">🔒</div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">Limited Credit Data</h3>
-              <p className="text-gray-600">
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+              <LockIcon />
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 mt-4 text-center">Limited Credit Data</h3>
+              <p className="text-gray-600 text-center">
                 Credit decisions rely on fragmented data, making it difficult for lenders to assess borrower risk accurately and offer competitive rates.
               </p>
             </div>
 
-            <div className="bg-white p-8 rounded-xl shadow-sm">
-              <div className="text-4xl mb-4">📉</div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">Manual Processes</h3>
-              <p className="text-gray-600">
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+              <ChartDownIcon />
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 mt-4 text-center">Manual Processes</h3>
+              <p className="text-gray-600 text-center">
                 Repayments are collected manually, leading to inefficiencies, errors, and poor borrower experience across the lending ecosystem.
               </p>
             </div>
@@ -104,59 +188,59 @@ const About = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-gradient-to-br from-primary-50 to-blue-50 p-8 rounded-xl">
-              <div className="text-4xl mb-4">🛡️</div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">Consent-Based Mandates</h3>
+            <div className="bg-gradient-to-br from-primary-50 to-blue-50 p-8 rounded-xl border border-primary-100">
+              <ShieldIcon />
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 mt-4">Consent-Based Mandates</h3>
               <p className="text-gray-700 mb-4">
                 Borrowers sign legally-binding digital mandates authorizing automatic repayments from M-Pesa, bank accounts, or SACCO payroll. This ensures predictable collections and reduces manual follow-up.
               </p>
               <ul className="text-gray-600 space-y-2">
-                <li>✓ OTP-verified consent</li>
-                <li>✓ Digital signatures</li>
-                <li>✓ Flexible payment methods</li>
-                <li>✓ Easy revocation rights</li>
+                <li><CheckIcon /> OTP-verified consent</li>
+                <li><CheckIcon /> Digital signatures</li>
+                <li><CheckIcon /> Flexible payment methods</li>
+                <li><CheckIcon /> Easy revocation rights</li>
               </ul>
             </div>
 
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-8 rounded-xl">
-              <div className="text-4xl mb-4">📈</div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">AI-Powered Credit Scoring (DCS)</h3>
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-8 rounded-xl border border-green-100">
+              <ChartUpIcon />
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 mt-4">AI-Powered Credit Scoring (DCS)</h3>
               <p className="text-gray-700 mb-4">
                 The Dhamini Credit Score analyzes real repayment behavior across all lending platforms to provide accurate, fair credit assessments that update continuously.
               </p>
               <ul className="text-gray-600 space-y-2">
-                <li>✓ Multi-platform data aggregation</li>
-                <li>✓ 300-1000 scoring range</li>
-                <li>✓ Risk tier classification</li>
-                <li>✓ Fair and transparent algorithms</li>
+                <li><CheckIcon /> Multi-platform data aggregation</li>
+                <li><CheckIcon /> 300-1000 scoring range</li>
+                <li><CheckIcon /> Risk tier classification</li>
+                <li><CheckIcon /> Fair and transparent algorithms</li>
               </ul>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-8 rounded-xl">
-              <div className="text-4xl mb-4">👥</div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">Universal KYC & Integration</h3>
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-8 rounded-xl border border-purple-100">
+              <UsersIcon />
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 mt-4">Universal KYC & Integration</h3>
               <p className="text-gray-700 mb-4">
                 One identity verification works across banks, SACCOs, chamas, and digital lenders. We integrate with IPRS and KRA for reliable identity verification.
               </p>
               <ul className="text-gray-600 space-y-2">
-                <li>✓ Tier 1-4 KYC standards</li>
-                <li>✓ IPRS integration</li>
-                <li>✓ KRA PIN verification</li>
-                <li>✓ Cross-platform recognition</li>
+                <li><CheckIcon /> Tier 1-4 KYC standards</li>
+                <li><CheckIcon /> IPRS integration</li>
+                <li><CheckIcon /> KRA PIN verification</li>
+                <li><CheckIcon /> Cross-platform recognition</li>
               </ul>
             </div>
 
-            <div className="bg-gradient-to-br from-orange-50 to-yellow-50 p-8 rounded-xl">
-              <div className="text-4xl mb-4">📱</div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">Blockchain Audit Trail</h3>
+            <div className="bg-gradient-to-br from-orange-50 to-yellow-50 p-8 rounded-xl border border-orange-100">
+              <BlockchainIcon />
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 mt-4">Blockchain Audit Trail</h3>
               <p className="text-gray-700 mb-4">
                 Every mandate, repayment, and credit score change is recorded on Hyperledger Fabric, creating an immutable, verifiable record that builds trust between all parties.
               </p>
               <ul className="text-gray-600 space-y-2">
-                <li>✓ Immutable transaction records</li>
-                <li>✓ Real-time verification</li>
-                <li>✓ Dispute resolution support</li>
-                <li>✓ Regulatory compliance</li>
+                <li><CheckIcon /> Immutable transaction records</li>
+                <li><CheckIcon /> Real-time verification</li>
+                <li><CheckIcon /> Dispute resolution support</li>
+                <li><CheckIcon /> Regulatory compliance</li>
               </ul>
             </div>
           </div>
@@ -212,27 +296,27 @@ const About = () => {
           </div>
 
           <div className="grid md:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-xl shadow-sm text-center">
-              <div className="text-3xl mb-3">📊</div>
-              <h3 className="font-semibold mb-2 text-gray-900">Alternative Credit Data</h3>
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center">
+              <ChartStatsIcon />
+              <h3 className="font-semibold mb-2 text-gray-900 mt-3">Alternative Credit Data</h3>
               <p className="text-gray-600 text-sm">Access repayment history across institutions for better risk assessment</p>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-sm text-center">
-              <div className="text-3xl mb-3">🤖</div>
-              <h3 className="font-semibold mb-2 text-gray-900">Automated Collections</h3>
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center">
+              <BotIcon />
+              <h3 className="font-semibold mb-2 text-gray-900 mt-3">Automated Collections</h3>
               <p className="text-gray-600 text-sm">Reduce manual effort with mandate-based repayment automation</p>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-sm text-center">
-              <div className="text-3xl mb-3">📉</div>
-              <h3 className="font-semibold mb-2 text-gray-900">Lower Default Rates</h3>
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center">
+              <PercentageIcon />
+              <h3 className="font-semibold mb-2 text-gray-900 mt-3">Lower Default Rates</h3>
               <p className="text-gray-600 text-sm">See 35% reduction in defaults with our collection system</p>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-sm text-center">
-              <div className="text-3xl mb-3">🔐</div>
-              <h3 className="font-semibold mb-2 text-gray-900">Regulatory Compliance</h3>
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center">
+              <SecurityIcon />
+              <h3 className="font-semibold mb-2 text-gray-900 mt-3">Regulatory Compliance</h3>
               <p className="text-gray-600 text-sm">Built-in compliance with CBK data protection regulations</p>
             </div>
           </div>
@@ -250,25 +334,25 @@ const About = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-sm">
-              <div className="text-4xl mb-4">🔗</div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">Hyperledger Fabric</h3>
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+              <LinkIcon />
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 mt-4">Hyperledger Fabric</h3>
               <p className="text-gray-600">
                 Enterprise-grade blockchain technology ensures immutable records and prevents tampering of financial data.
               </p>
             </div>
 
-            <div className="bg-white p-8 rounded-xl shadow-sm">
-              <div className="text-4xl mb-4">🤖</div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">AI & Machine Learning</h3>
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+              <BotIcon />
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 mt-4">AI & Machine Learning</h3>
               <p className="text-gray-600">
                 Advanced algorithms analyze repayment patterns to generate accurate credit scores and risk predictions.
               </p>
             </div>
 
-            <div className="bg-white p-8 rounded-xl shadow-sm">
-              <div className="text-4xl mb-4">☁️</div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">Supabase Infrastructure</h3>
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+              <CloudIcon />
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 mt-4">Supabase Infrastructure</h3>
               <p className="text-gray-600">
                 Secure, scalable database with built-in authentication and real-time capabilities.
               </p>
@@ -301,9 +385,9 @@ const About = () => {
           <div className="grid md:grid-cols-3 gap-8">
             <div>
               <h3 className="text-xl font-semibold mb-4">Contact Us</h3>
-              <p className="text-gray-300 mb-2">📍 Nairobi, Kenya</p>
-              <p className="text-gray-300 mb-2">📧 info@dhamini.co.ke</p>
-              <p className="text-gray-300">📱 +254 700 000 000</p>
+              <p className="text-gray-300 mb-2">Nairobi, Kenya</p>
+              <p className="text-gray-300 mb-2">info@dhamini.co.ke</p>
+              <p className="text-gray-300">+254 700 000 000</p>
             </div>
             <div>
               <h3 className="text-xl font-semibold mb-4">Quick Links</h3>
