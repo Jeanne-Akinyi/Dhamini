@@ -46,10 +46,10 @@ Dhamini operates as a five-layer middleware system:
 - [x] Authentication & authorization system
 - [x] M-Pesa STK Push integration
 - [x] Supabase Auth integration
+- [x] Real-time DCS (Dhamini Credit Score) update
+- [x] Basic Lender & Borrower Dashboards
 - [ ] Digital Mandate hashing to Hyperledger Fabric network (in development)
 - [ ] Automated repayment simulation via Daraja Sandbox
-- [ ] Real-time DCS (Dhamini Credit Score) update
-- [ ] Basic Lender & Borrower Dashboards
 
 ## Authors
 
